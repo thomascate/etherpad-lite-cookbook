@@ -9,11 +9,14 @@
 
 # Defaults based on https://github.com/ether/etherpad-lite/blob/develop/settings.json.template
 
+value = ""; 10.times{value  << (65 + rand(25)).chr}
+null = "null"
+
 default['etherpad-lite']['title'] = "Etherpad"
 default['etherpad-lite']['favicon_url'] = "favicon.ico"
 default['etherpad-lite']['ip_address'] = "0.0.0.0"
 default['etherpad-lite']['port_number'] = 9001
-default['etherpad-lite']['session_key'] = ""
+default['etherpad-lite']['session_key'] = value
 default['etherpad-lite']['ssl_enabled'] = false
 default['etherpad-lite']['ssl_key_path'] = ""
 default['etherpad-lite']['ssl_cert_path'] = ""
@@ -27,7 +30,7 @@ default['etherpad-lite']['require_session'] = "false"
 default['etherpad-lite']['edit_only'] =  "false"
 default['etherpad-lite']['minify'] = "true"
 default['etherpad-lite']['max_age'] = 21600 # // 60 * 60 * 6 = 6 hours
-default['etherpad-lite']['abiword_path'] = "null"
+default['etherpad-lite']['abiword_path'] = null
 default['etherpad-lite']['require_authentication'] = "false"
 default['etherpad-lite']['require_authorization'] = "false"
 default['etherpad-lite']['admin_enabled'] = false
