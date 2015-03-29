@@ -51,7 +51,7 @@ group = 'etherpad-user'
 user_home = node['etherpad-lite']['service_user_home']
 project_path = "#{user_home}/etherpad-lite"
 
-group "etherpad-lite" do
+group "etherpad-user" do
   gid "500"
   action :create
 end
