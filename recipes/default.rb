@@ -26,23 +26,52 @@ case node['platform_family']
     # && yum groupinstall "Development Tools"
 end
 
+include_recipe "postgresql::server"
+include_recipe "database::postgresql"
+
+postgresql_database 'etherpad' do
+  connection(
+    :host      => '127.0.0.1',
+    :port      => node['postgresql']['config']['port'],
+    :username  => 'postgres',
+    :password  => node['postgresql']['password']['postgres']
+  )
+  action :create
+end
+
 packages.each do |p|
   package p
 end
 
-node.set['nodejs']['install_method'] = 'package'
+node.set['nodejs']['install_method'] = 'source'
 include_recipe "nodejs"
 
-
 user = node['etherpad-lite']['service_user']
-group = node['etherpad-lite']['service_user_gid']
+group = 'etherpad-user'
 user_home = node['etherpad-lite']['service_user_home']
 project_path = "#{user_home}/etherpad-lite"
+
+group "etherpad-user" do
+  gid "500"
+  action :create
+end
+
+user node['etherpad-lite']['service_user'] do
+  action :create
+  comment "etherpad user"
+  uid 5000
+  gid node['etherpad-lite']['service_user_gid']
+  home node['etherpad-lite']['service_user_home']
+  shell "/bin/bash"
+  password "$6$C3J8Sl9V$.w5ms/.IQA.xR1YSVnivutmXFIqidXjIs/Q7xzZMWt7WxWaLRUbwRw5x46zOPRXGJTG0IYBYCzGUagA4MSIgw/"
+  supports :manage_home => true
+end
 
 git project_path do
   repository node['etherpad-lite']['etherpad_git_repo_url']
   action :sync
   user user
+  group group
 end
 
 template "#{project_path}/settings.json" do
@@ -60,7 +89,7 @@ template "#{project_path}/settings.json" do
     :db_type => node['etherpad-lite']['db_type'],
     :db_user => node['etherpad-lite']['db_user'],
     :db_host => node['etherpad-lite']['db_host'],
-    :db_password => node['etherpad-lite']['db_password'],
+    :db_password => node['postgresql']['password']['postgres'],
     :db_name => node['etherpad-lite']['db_name'],
     :default_text => node['etherpad-lite']['default_text'],
     :require_session => node['etherpad-lite']['require_session'],
@@ -96,21 +125,10 @@ log_dir = node['etherpad-lite']['logs_dir']
 access_log = log_dir + '/access.log'
 error_log = log_dir + '/error.log'
 
-# Upstart service config file
-template "/etc/init/" + node['etherpad-lite']['service_name'] + ".conf" do
-    source "upstart.conf.erb"
-    owner user
-    group group
-    variables({
-      :etherpad_installation_dir => project_path,
-      :etherpad_service_user => user,
-      :etherpad_access_log => access_log,
-      :etherpad_error_log => error_log,
-    })
-end
+include_recipe 'nginx'
 
 # Nginx config file
-template node['nginx']['dir'] + "/sites-enabled/etherpad.conf" do
+template node['nginx']['dir'] + "/sites-available/default" do
     source "nginx.conf.erb"
     owner node['nginx']['user']
     group node['nginx']['group']
@@ -149,7 +167,7 @@ end
 
 ## Install dependencies
 bash "installdeps" do
-  user 0
+  user "root"
   cwd project_path
   code <<-EOH
   ./bin/installDeps.sh >> #{error_log}
@@ -174,16 +192,8 @@ unless node['etherpad-lite']['plugins'].empty?
       action :install_local
     end
   end
-
-  # Hacky workaround because we can't pass a user to npm_module
-  execute "chown -R #{user} #{node_modules}" do
-    user "root"
-    notifies :restart, "service[#{node['etherpad-lite']['service_name']}]"
-  end
 end
 
-# Register capture app as a service
-service node['etherpad-lite']['service_name'] do
-  provider Chef::Provider::Service::Upstart
-  action :start
-end
+include_recipe "runit"
+
+runit_service "etherpad-lite"

@@ -32,7 +32,7 @@ The following attributes should be set based on your specific deployment, see th
 * `node['etherpad-lite']['db_name']` - db name
 * `node['etherpad-lite']['default_text']` - the default text of a pad
 * `node['etherpad-lite']['require_session']` - (boolean) Users must have a session to access pads. This effectively allows only group pads to be accessed.
-* `node['etherpad-lite']['edit_only']` -  (boolean) Users may edit pads but not create new ones. Pad creation is only via the API. This applies both to group pads and regular pads. 
+* `node['etherpad-lite']['edit_only']` -  (boolean) Users may edit pads but not create new ones. Pad creation is only via the API. This applies both to group pads and regular pads.
 * `node['etherpad-lite']['minify']` - if true, all css & js will be minified before sending to the client. This will improve the loading performance massivly, but makes it impossible to debug the javascript/css
 * `node['etherpad-lite']['max_age']` - How long may clients use served javascript code (in seconds)? Without versioning this may cause problems during deployment. Set to 0 to disable caching
 * `node['etherpad-lite']['abiword_path']` - This is the path to the Abiword executable. Setting it to null, disables abiword. Abiword is needed to advanced import/export features of pads
@@ -69,6 +69,10 @@ Just include `etherpad-lite` in your node's `run_list`:
 }
 ```
 
+TODO
+----
+* This seems like a great idea: https://www.npmjs.com/package/ep_markdown
+
 Contributing
 ------------
 
@@ -84,7 +88,7 @@ License and Authors
 
 License: Apache 2.0
 
-Authors: 
+Authors:
 
 * OpenWatch FPC
 * @computerlyrik original version (https://github.com/computerlyrik/chef-etherpad)
