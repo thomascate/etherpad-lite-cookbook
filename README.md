@@ -11,6 +11,8 @@ Requirements
 - `postgresql` - we use postgres
 - `npm` - pg gem needs to be installed
 - `nginx` - Might not be the optimal way to run it
+- `database` - creates the database for you
+- `runit` - start up the etherpad-lite app server
 
 Attributes
 ----------
@@ -69,10 +71,6 @@ Just include `etherpad-lite` in your node's `run_list`:
 }
 ```
 
-TODO
-----
-* This seems like a great idea: https://www.npmjs.com/package/ep_markdown
-
 Contributing
 ------------
 
@@ -90,6 +88,7 @@ License: Apache 2.0
 
 Authors:
 
+* JJ Asghar
 * OpenWatch FPC
 * @computerlyrik original version (https://github.com/computerlyrik/chef-etherpad)
 * @reidab
