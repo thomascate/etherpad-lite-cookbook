@@ -71,6 +71,7 @@ git project_path do
   repository node['etherpad-lite']['etherpad_git_repo_url']
   action :sync
   user user
+  group group
 end
 
 template "#{project_path}/settings.json" do
@@ -127,7 +128,7 @@ error_log = log_dir + '/error.log'
 include_recipe 'nginx'
 
 # Nginx config file
-template node['nginx']['dir'] + "/sites-enabled/etherpad.conf" do
+template node['nginx']['dir'] + "/sites-available/default" do
     source "nginx.conf.erb"
     owner node['nginx']['user']
     group node['nginx']['group']
@@ -166,10 +167,10 @@ end
 
 ## Install dependencies
 bash "installdeps" do
-  user user
+  user "root"
   cwd project_path
   code <<-EOH
-  ./bin/run.sh >> #{error_log}
+  ./bin/installDeps.sh >> #{error_log}
   EOH
 end
 
@@ -191,10 +192,8 @@ unless node['etherpad-lite']['plugins'].empty?
       action :install_local
     end
   end
-
-  # Hacky workaround because we can't pass a user to npm_module
-  execute "chown -R #{user} #{node_modules}" do
-    user "root"
-    notifies :restart, "service[#{node['etherpad-lite']['service_name']}]"
-  end
 end
+
+include_recipe "runit"
+
+runit_service "etherpad-lite"

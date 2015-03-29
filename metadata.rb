@@ -11,5 +11,6 @@ depends         'database'
 depends         'postgresql'
 depends         'npm'
 depends         'nginx'
+depends         'runit'
 
 # Check README.md for attributes
