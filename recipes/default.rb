@@ -47,7 +47,7 @@ node.set['nodejs']['install_method'] = 'source'
 include_recipe "nodejs"
 
 user = node['etherpad-lite']['service_user']
-group = "etherpad-lite"
+group = 'etherpad-user'
 user_home = node['etherpad-lite']['service_user_home']
 project_path = "#{user_home}/etherpad-lite"
 
