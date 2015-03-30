@@ -143,6 +143,7 @@ template node['nginx']['dir'] + "/sites-available/etherpad" do
       :ssl_key => node['etherpad-lite']['ssl_key_path'],
       :access_log => access_log,
       :error_log => error_log,
+      :uplift_https => node['etherpad-lite']['uplift_https']
     })
     notifies :restart, "service[nginx]"
     action :create

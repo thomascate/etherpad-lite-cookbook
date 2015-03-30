@@ -20,10 +20,22 @@ server {
     <% end -%>
 
     location / {
-        proxy_pass             http://localhost:<%= @internal_port %>/;
+        proxy_pass             http://localhost:<%= @internal_port %>;
         proxy_set_header       Host $host;
         # be carefull, this line doesn't override any proxy_buffering on set in a conf.d/file.conf
         proxy_buffering off;
+        <% if @uplift_https -%>
+        set $uplift_https false;
+        if ($http_x_forwarded_proto != 'https') {
+          set $uplift_https true;
+        }
+        if ($request_uri ~ ^/stats) {
+          set $uplift_https false;
+        }
+        if ($uplift_https = true) {
+          rewrite ^ https://$host$request_uri? permanent;
+        }
+        <% end -%>
     }
 }
 

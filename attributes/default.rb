@@ -50,3 +50,4 @@ default['etherpad-lite']['etherpad_git_repo_url'] = 'git://github.com/ether/ethe
 default['etherpad-lite']['etherpad_api_key'] = ''
 
 default['etherpad-lite']['plugins'] = ["comments_page", "font_size","font_color", "markdown"]
+default['etherpad-lite']['uplift_https'] = false
