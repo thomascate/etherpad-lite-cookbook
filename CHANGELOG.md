@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of etherpad-lite.
 
+## 0.2.1:
+- Disables default site and uses etherpad site instead in nginx
+
 ## 0.1.1:
 
 Forked by OpenWatch to include variables in the template and only support etherpad-lite.
