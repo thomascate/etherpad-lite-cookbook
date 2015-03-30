@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of etherpad-lite.
 
+## 0.3.0
+- Adds the ability to do https uplift when behind an ELB
+
 ## 0.2.1:
 - Disables default site and uses etherpad site instead in nginx
 
