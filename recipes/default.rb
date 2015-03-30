@@ -127,8 +127,12 @@ error_log = log_dir + '/error.log'
 
 include_recipe 'nginx'
 
+nginx_site 'default' do
+  enable false
+end
+
 # Nginx config file
-template node['nginx']['dir'] + "/sites-available/default" do
+template node['nginx']['dir'] + "/sites-available/etherpad" do
     source "nginx.conf.erb"
     owner node['nginx']['user']
     group node['nginx']['group']
@@ -142,6 +146,11 @@ template node['nginx']['dir'] + "/sites-available/default" do
     })
     notifies :restart, "service[nginx]"
     action :create
+end
+
+nginx_site 'etherpad' do
+  enable true
+  notifies :restart, "service[nginx]"
 end
 
 directory log_dir do
