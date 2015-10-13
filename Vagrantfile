@@ -78,7 +78,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     chef.json = {
       postgresql: {
         password: {
-          postgres: "changeme"
+          postgres: "postgres"
         }
       }
     }
